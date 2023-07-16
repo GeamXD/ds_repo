@@ -1,3 +1,4 @@
+# Customer Analytics: Preparing Data for Modeling
 # Project Description
 - Being able to create predictive models is very cool, but translating fancy models into real business value is a major challenge if the training data isn't stored efficiently.
 
