@@ -6,8 +6,11 @@ import plotly.express as px
 from category_encoders import OrdinalEncoder
 from category_encoders import OneHotEncoder
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.tree import DecisionTreeClassifier
+import pickle
 
 
 class CustomerAnalytics:
@@ -217,40 +220,98 @@ class CustomerAnalytics:
 
 class BuildModel(CustomerAnalytics):
     """_summary_
-
+            Builds model and other operations
     Args:
         CustomerAnalytics (_type_): _description_
     """
 
-    def __init__(self):
-        self.repo = self.wrangle()
-
-    def build():
+    def split(self):
         """_summary_
         """
-        pass
+        # Initialize a variable with dataframe
+        df = super().wrangle()
+        # Split data into training and testing datasets
+        cols_to_drop = ['city', 'city_development_index',
+                        'student_id', 'job_change']
+        # Select target variable name
+        target = 'job_change'
+        # Drop columns
+        X = df.drop(columns=cols_to_drop)
+        # Instantiate target variable
+        y = df[target]
+        # Returns X_train, X_test, y_train, y_test
+        return train_test_split(X, y, test_size=.2, random_state=42)
 
     def baseline(self):
         """_summary_
+            Builds the models baseline features
+        Returns:
+            y_pred_baseline(int): accuracy score    
         """
-        pass
+        # Instantiates all the variables as instance attributes
+        self.X_train, self.X_test, self.y_train, self.y_test = self.split()
+        # Calculates naive model accuracy score
+        y_preb_baseline = self.y_train.value_counts(normalize=True)[0] * 100
+        # Returns naive model score
+        return float(round(y_preb_baseline, 2))
 
-    def iterate():
+    def __build(self):
+        """_summary_
+           Builds the models
+        Returns:
+            model: ml model    
+        """
+        # Instantiates all the variables as instance attributes
+        self.X_train, self.X_test, self.y_train, self.y_test = self.split()
+        # Creates a model using pipeline
+        model = make_pipeline(OrdinalEncoder(), DecisionTreeClassifier(
+            max_depth=3, random_state=42))
+        # Fits the model and trains it
+        model.fit(self.X_train, self.y_train)
+        # Returns the trained model
+        return model
+
+    def evaluate(self):
+        """_summary_
+           Evaluates the model
+        Returns:
+            accuracy score(int): accuracy score    
+        """
+        # Instantiates all the variables as instance attributes
+        self.X_train, self.X_test, self.y_train, self.y_test = self.split()
+        # Instantiates the trained model
+        model = self.__build()
+        # Makes prediction
+        y_pred = model.predict(self.X_test)
+        # Returns accuracy score
+        return float(round(accuracy_score(self.y_test, y_pred) * 100, 2))
+
+    def make_prediction(self):
+        """_summary_
+        """
+        # my_dict = {'gender': ['Other', 'Male', 'Female'],
+        #            'relevant_experience': ['Has relevant experience', 'No relevant experience'],
+        #            'enrolled_university': ['Full time course', 'Part time course', 'no_enrollment'],
+        #            'education_level': ['Primary School', 'High School', 'Graduate', 'Masters', 'Phd'],
+        #            'major_discipline': ['Arts', 'Business Degree', 'Humanities', 'No Major', 'Other', 'STEM'],
+        #            'experience': ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '>20'],
+        #            'company_size': ['<10', '10-49', '50-99', '100-499', '500-999', '1000-4999', '5000-9999', '10000+'],
+        #            'company_type': ['Early Stage Startup', 'Funded Startup', 'NGO', 'Other', 'Public Sector', 'Pvt Ltd'],
+        #            'last_new_job': ['never', '1', '2', '3', '4', '>4'],
+        #            'training_hours': 'Any value'}
+
+    def communitcate(self):
         """_summary_
         """
         pass
 
-    def evaluate():
+    def dump(self):
         """_summary_
+            Saves the trained model
+        Returns:
+            _type_: _description_
         """
-        pass
-
-    def tune():
-        """_summary_
-        """
-        pass
-
-    def communitcate():
-        """_summary_
-        """
-        pass
+        model = self.__build()
+        with open('cus_analy.pkl', 'wb') as f:
+            dump = pickle.dump(model, f)
+        return dump
