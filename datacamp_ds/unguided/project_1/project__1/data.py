@@ -118,17 +118,11 @@ class CustomerAnalytics:
         Returns:
             fig: a graph object
         """
-        fig = px.bar(self.wrangle()['gender'].value_counts())
-        fig.update_layout(
-            title=dict(
-                text='Barplot of Gender',
-                font=dict(size=16),
-                x=0.5,
-                xref='paper'
-            ),
-            xaxis_title='Gender',
-            yaxis_title='Counts'
-        )
+        fig = px.bar(self.wrangle()['gender'].value_counts(
+        ), title='Gender Representation')
+        fig.update_layout(xaxis_title='Gender',
+                          yaxis_title='Counts'
+                          )
         fig.update_traces(showlegend=False)
         return fig
 
@@ -141,14 +135,14 @@ class CustomerAnalytics:
         """
         #
         fig = px.bar(data_frame=(self.wrangle().groupby('gender')['training_hours'].sum()).to_frame(),
-                     y='training_hours')
+                     y='training_hours', title='Gender breakdown of training hours')
         fig.update_layout(
-            title=dict(
-                text='Total Training Hours vs Gender',
-                font=dict(size=16),
-                x=0.5,
-                xref='paper'
-            ),
+            # title=dict(
+            #     text='Total Training Hours vs Gender',
+            #     font=dict(size=16),
+            #     x=0.5,
+            #     xref='paper'
+            # ),
             xaxis_title='Gender',
             yaxis_title='Training Hours'
         )
@@ -162,15 +156,16 @@ class CustomerAnalytics:
             fig: a graph object
         """
         #
-        fig = px.bar(self.wrangle()['education_level'].value_counts())
+        fig = px.bar(self.wrangle()['education_level'].value_counts(
+        ), title='Barplot of Education Level')
         fig.update_traces(showlegend=False)
         fig.update_layout(
-            title=dict(
-                text='Barplot of Education Level',
-                font=dict(size=16),
-                x=0.5,
-                xref='paper'
-            ),
+            # title=dict(
+            #     text='Barplot of Education Level',
+            #     font=dict(size=16),
+            #     x=0.5,
+            #     xref='paper'
+            # ),
             yaxis_title='Counts',
             xaxis_title='Education Level'
         )
@@ -190,12 +185,14 @@ class CustomerAnalytics:
                      x='gender',
                      color='job_change',
                      barmode='group',
-                     labels={'job_change': 'Job Change'})
-        fig.update_layout(title=dict(
-            text='Indication of Job change per Gender',
-            xref='paper',
-            x=0.5,
-            font=dict(size=16)),
+                     labels={'job_change': 'Job Change'},
+                     title='Occupational mobility by gender')
+        fig.update_layout(
+            # title=dict(
+            # text='Indication of Job change per Gender',
+            # xref='paper',
+            # x=0.5,
+            # font=dict(size=16)),
             xaxis_title='Counts',
             yaxis_title='Gender'
         )
@@ -207,12 +204,14 @@ class CustomerAnalytics:
         Returns:
             fig: a graph object
         """
-        fig = px.box(data_frame=self.wrangle(), x='training_hours')
-        fig.update_layout(title=dict(
-            text='Boxplot of Training Hours',
-            xref='paper',
-            x=0.5,
-            font=dict(size=16)),
+        fig = px.box(data_frame=self.wrangle(), x='training_hours',
+                     title='Boxplot of Training Hours')
+        fig.update_layout(
+            # title=dict(
+            # text='Boxplot of Training Hours',
+            # xref='paper',
+            # x=0.5,
+            # font=dict(size=16)),
             xaxis_title='Training Hours',
         )
         return fig
@@ -315,3 +314,13 @@ class BuildModel(CustomerAnalytics):
         with open('cus_analy.pkl', 'wb') as f:
             dump = pickle.dump(model, f)
         return dump
+    
+    def load(self):
+        """_summary_
+                Loads model from saved location
+        Returns:
+            model: decision tree model
+        """
+        with open('./cus_analy.pkl', 'rb') as f:
+            model = pickle.load(f)
+        return model
