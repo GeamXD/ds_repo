@@ -6,7 +6,6 @@ In this project, you will take a list of user passwords and, using publication 8
 ## Instructions
 You are a data analyst working with the IT team at your company. After a recent data breach, the IT team has decided to strengthen password requirements. They've asked you to write a script to analyze the company's employees logins and identify which employees need to update their password. This will require you to use your string manipulation and regular expression skills.
 
-Your two questions are as follows:
+### Your two questions are as follows:
 	- What percentage of users have invalid passwords? Save your answer as a variable, bad_pass, in the form of a float rounded up to two decimals (e.g., 0.18).
-
 	- Which users need to change their passwords? Save your answer as a pandas Series consisting of the usernames in alphabetically ascending order called email_list. This will be used to automate email notifications to employees.

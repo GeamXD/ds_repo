@@ -1,11 +1,7 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import numpy as np
 import plotly.express as px
 from category_encoders import OrdinalEncoder
-from category_encoders import OneHotEncoder
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score, classification_report
@@ -314,7 +310,7 @@ class BuildModel(CustomerAnalytics):
         with open('cus_analy.pkl', 'wb') as f:
             dump = pickle.dump(model, f)
         return dump
-    
+
     def load(self):
         """_summary_
                 Loads model from saved location
